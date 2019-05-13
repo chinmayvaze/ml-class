@@ -10,7 +10,7 @@ from wandb.keras import WandbCallback
 # logging code
 run = wandb.init()
 config = run.config
-config.loss = "categorical_crossentropy"
+config.loss = "mae"
 config.optimizer = "adam"
 config.epochs = 10
 

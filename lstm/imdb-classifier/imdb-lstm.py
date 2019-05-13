@@ -6,6 +6,7 @@ from keras.layers import CuDNNLSTM as LSTM
 from keras.layers import CuDNNGRU 
 from keras.layers import Bidirectional
 from keras.layers import Conv1D, Flatten
+from keras.layers import Bidirectional 
 from keras.datasets import imdb
 import wandb
 from wandb.keras import WandbCallback
@@ -59,3 +60,5 @@ model.fit(X_train, y_train,
           batch_size=config.batch_size,
           epochs=config.epochs,
           validation_data=(X_test, y_test), callbacks=[WandbCallback()])
+
+model.save("seniment.h5")

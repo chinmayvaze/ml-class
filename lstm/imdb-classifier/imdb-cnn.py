@@ -1,7 +1,8 @@
 from keras.preprocessing import sequence
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
-from keras.layers import Embedding, LSTM
+from keras.layers import Embedding
+from keras.layers import CuDNNLSTM as LSTM
 from keras.layers import Conv1D, Flatten
 from keras.datasets import imdb
 import wandb
@@ -46,7 +47,8 @@ model.add(Conv1D(config.filters,
                  config.kernel_size,
                  padding='valid',
                  activation='relu'))
-model.add(Flatten())
+model.add(LSTM(25))
+#model.add(Flatten())
 model.add(Dense(config.hidden_dims, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(1, activation='sigmoid'))

@@ -3,6 +3,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras.layers import Embedding
 from keras.layers import CuDNNLSTM as LSTM
+from keras.layers import CuDNNGRU 
+from keras.layers import Bidirectional
 from keras.layers import Conv1D, Flatten
 from keras.datasets import imdb
 import wandb
@@ -28,8 +30,15 @@ config.epochs = 10
 
 tokenizer = text.Tokenizer(num_words=config.vocab_size)
 tokenizer.fit_on_texts(X_train)
+
+print("Before: ", X_train[0])
 X_train = tokenizer.texts_to_sequences(X_train)
 X_test = tokenizer.texts_to_sequences(X_test)
+unknown_train = tokenizer.texts_to_sequences(["ghhhhjgjfjfjkd"])
+print("Unknown: ", unknown_train)
+
+print("After: ", X_train[0])
+
 
 X_train = sequence.pad_sequences(X_train, maxlen=config.maxlen)
 X_test = sequence.pad_sequences(X_test, maxlen=config.maxlen)
@@ -38,7 +47,9 @@ model = Sequential()
 model.add(Embedding(config.vocab_size,
                     config.embedding_dims,
                     input_length=config.maxlen))
-model.add(LSTM(50))
+model.add(Bidirectional(CuDNNGRU(25, return_sequences='True')))
+model.add(Bidirectional(CuDNNGRU(25)))
+model.add(Dropout(0.2))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy',
               optimizer='rmsprop',

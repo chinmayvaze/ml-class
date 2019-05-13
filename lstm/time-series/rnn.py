@@ -11,12 +11,13 @@ from wandb.keras import WandbCallback
 
 import plotutil
 from plotutil import PlotCallback
+import pdb
 
 wandb.init()
 config = wandb.config
 
 config.repeated_predictions = False
-config.look_back = 4
+config.look_back = 32
 
 
 def load_data(data_type="airline"):
@@ -43,7 +44,8 @@ def create_dataset(dataset):
     return np.array(dataX), np.array(dataY)
 
 
-data = load_data("sin")
+data = load_data("airline")
+
 
 # normalize data to between 0 and 1
 max_val = max(data)
@@ -58,12 +60,15 @@ test = data[split:]
 trainX, trainY = create_dataset(train)
 testX, testY = create_dataset(test)
 
+print(trainX.shape)
 trainX = trainX[:, :, np.newaxis]
+print(trainX.shape)
+exit()
 testX = testX[:, :, np.newaxis]
-
+#pdb.set_trace()
 # create and fit the RNN
 model = Sequential()
-model.add(SimpleRNN(10, input_shape=(config.look_back, 1)))
+model.add(LSTM(32, input_shape=(config.look_back, 1)))
 model.add(Dense(1))
 model.compile(loss='mae', optimizer='rmsprop')
 model.fit(trainX, trainY, epochs=1000, batch_size=20, validation_data=(testX, testY),  callbacks=[

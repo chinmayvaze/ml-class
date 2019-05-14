@@ -44,7 +44,13 @@ model = Model(inp, dense_last_out)
 
 model.compile(loss=config.loss, optimizer=config.optimizer,
               metrics=['accuracy'])
+
 model.summary()
+
+dense = model.get_layer("dense_1")
+print(dense.get_weights()[1].shape)
+
+exit()
 # Fit the model
 model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test),
           callbacks=[WandbCallback(data_type="image", labels=signdata.letters)])
